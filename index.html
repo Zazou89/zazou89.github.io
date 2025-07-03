@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>I.T.E.R.A.T.E - Test de répétition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      width: 100%;
+      max-width: 700px;
+      padding: 2rem;
+    }
+
+    .institute-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .institute-name {
+      font-size: 2.25rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a855f7, #3b82f6, #06b6d4);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.2em;
+      margin-bottom: 0.5rem;
+      font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+      text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+      /* Fallback pour les captures d'écran */
+      color: #a855f7;
+    }
+
+    .institute-subtitle {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      font-style: italic;
+      line-height: 1.4;
+      max-width: 600px;
+      margin: 0 auto;
+      letter-spacing: 0.02em;
+    }
+
+    .system-info {
+      background: rgba(51, 65, 85, 0.3);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-top: 2rem;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+    }
+
+    .system-info-title {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .system-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .system-info-item {
+      color: #cbd5e1;
+    }
+
+    .system-info-label {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #f1f5f9;
+    }
+
+    .description {
+      color: #cbd5e1;
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+      background: rgba(51, 65, 85, 0.6);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      backdrop-filter: blur(5px);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #f1f5f9;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      resize: none;
+      font-size: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(51, 65, 85, 0.5);
+      color: #e2e8f0;
+      font-family: 'Inter', monospace;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.15s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    textarea:disabled {
+      background: rgba(51, 65, 85, 0.3);
+      color: #94a3b8;
+    }
+
+    textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .result {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      color: #34d399;
+      font-weight: 500;
+      display: none;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      color: white;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(51, 65, 85, 0.6);
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(51, 65, 85, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .notification {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    .notification.show {
+      display: block;
+    }
+
+    .notification.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .notification.success {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .institute-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+      }
+      
+      .institute-name {
+        font-size: 1.875rem;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+      }
+      
+      .institute-subtitle {
+        font-size: 0.8rem;
+      }
+      
+      .system-info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      
+      .stats {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="institute-header">
+      <div class="institute-name">I.T.E.R.A.T.E.</div>
+      <div class="institute-subtitle">Institut de Technologie, d'Étude et de Recherche Appliquée en Typographie Électronique</div>
+    </div>
+
+
+    
+    <h1>Test de vitesse de répétition - 1784 caractères</h1>
+    <p class="description">
+      Cette expérience vise à mesurer le temps nécessaire pour saisir 1784 fois consécutivement le caractère <strong>?</strong>.
+    </p>
+    <p class="description">
+      Le chronomètre se déclenche automatiquement dès la première saisie du caractère, et s'arrête une fois le nombre exact atteint. Vous pourrez ensuite consulter et partager votre résultat.
+    </p>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-label">Temps</div>
+        <div class="stat-value" id="timer">0.00s</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Progression</div>
+        <div class="stat-value" id="counter">0 / 1784</div>
+      </div>
+    </div>
+
+    <textarea 
+      id="input" 
+      placeholder="Commencez à taper des points d'interrogation ici..."
+      spellcheck="false"
+      autocomplete="off"
+    ></textarea>
+
+    <div class="result" id="result"></div>
+
+    <div class="actions">
+      <button id="resetBtn" class="btn btn-secondary">Recommencer</button>
+      <button id="screenshotBtn" class="btn btn-primary">Partager le résultat</button>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="system-info">
+      <div class="system-info-title">Informations système</div>
+      <div class="system-info-grid">
+        <div class="system-info-item">
+          <span class="system-info-label">Navigateur:</span> <span id="browser-info">Détection...</span>
+        </div>
+        <div class="system-info-item">
+          <span class="system-info-label">Système:</span> <span id="os-info">Détection...</span>
+        </div>
+        <div class="system-info-item">
+          <span class="system-info-label">Date:</span> <span id="date-info">Chargement...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    const textarea = document.getElementById('input');
+    const timerDisplay = document.getElementById('timer');
+    const counterDisplay = document.getElementById('counter');
+    const result = document.getElementById('result');
+    const resetBtn = document.getElementById('resetBtn');
+    const screenshotBtn = document.getElementById('screenshotBtn');
+    const notification = document.getElementById('notification');
+
+    let startTime = null;
+    let finished = false;
+    let lastInputTime = 0;
+    let inputEvents = [];
+    let pasteDetected = false;
+    let tabFocused = true;
+    let massiveJumpDetected = false;
+    const targetCount = 1784;
+
+    // Détection du navigateur
+    function getBrowserInfo() {
+      const ua = navigator.userAgent;
+      let browserName = 'Inconnu';
+      let browserVersion = '';
+
+      if (ua.includes('Firefox')) {
+        browserName = 'Firefox';
+        browserVersion = ua.match(/Firefox\/(\d+)/)?.[1] || '';
+      } else if (ua.includes('Chrome') && !ua.includes('Edg')) {
+        browserName = 'Chrome';
+        browserVersion = ua.match(/Chrome\/(\d+)/)?.[1] || '';
+      } else if (ua.includes('Safari') && !ua.includes('Chrome')) {
+        browserName = 'Safari';
+        browserVersion = ua.match(/Version\/(\d+)/)?.[1] || '';
+      } else if (ua.includes('Edg')) {
+        browserName = 'Edge';
+        browserVersion = ua.match(/Edg\/(\d+)/)?.[1] || '';
+      } else if (ua.includes('Opera') || ua.includes('OPR')) {
+        browserName = 'Opera';
+        browserVersion = ua.match(/(?:Opera|OPR)\/(\d+)/)?.[1] || '';
+      }
+
+      return `${browserName}${browserVersion ? ' ' + browserVersion : ''}`;
+    }
+
+    // Détection du système d'exploitation
+    function getOSInfo() {
+      const ua = navigator.userAgent;
+      const platform = navigator.platform;
+      
+      if (ua.includes('Windows NT 10.0')) return 'Windows 10/11';
+      if (ua.includes('Windows NT 6.3')) return 'Windows 8.1';
+      if (ua.includes('Windows NT 6.1')) return 'Windows 7';
+      if (ua.includes('Windows')) return 'Windows';
+      if (ua.includes('Mac OS X')) {
+        const version = ua.match(/Mac OS X ([\d_]+)/)?.[1]?.replace(/_/g, '.');
+        return `macOS ${version || ''}`.trim();
+      }
+      if (ua.includes('Linux')) return 'Linux';
+      if (ua.includes('Android')) return 'Android';
+      if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
+      
+      return platform || 'Inconnu';
+    }
+
+    // Initialisation des informations système
+    function initSystemInfo() {
+      document.getElementById('browser-info').textContent = getBrowserInfo();
+      document.getElementById('os-info').textContent = getOSInfo();
+      document.getElementById('date-info').textContent = new Date().toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // Initialiser les infos système au chargement
+    initSystemInfo();
+
+    function countQuestionMarks(str) {
+      return (str.match(/\?/g) || []).length;
+    }
+
+    function showNotification(message, type = 'info') {
+      notification.textContent = message;
+      notification.className = `notification show ${type}`;
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Détection de changement d'onglet
+    document.addEventListener('visibilitychange', () => {
+      if (startTime && !finished) {
+        tabFocused = !document.hidden;
+      }
+    });
+
+    // Détection de copier-coller
+    textarea.addEventListener('paste', (e) => {
+      e.preventDefault();
+      pasteDetected = true;
+      showNotification('⚠️ Collage détecté - Veuillez taper manuellement', 'error');
+    });
+
+    function detectSuspiciousInput(currentTime, previousCount, currentCount) {
+      return false;
+    }
+
+    textarea.addEventListener('input', (e) => {
+      if (finished) return;
+
+      const currentTime = performance.now();
+      const text = textarea.value;
+      const count = countQuestionMarks(text);
+      const previousCount = inputEvents.length > 0 ? inputEvents[inputEvents.length - 1].count : 0;
+
+      // Vérification: seulement des points d'interrogation
+      if (text.length > count) {
+        const invalidChars = text.replace(/\?/g, '').length;
+        if (invalidChars > 0) {
+          showNotification('⚠️ Seuls les caractères "?" sont autorisés !', 'error');
+          // Nettoyer le texte
+          textarea.value = '?'.repeat(count);
+          return;
+        }
+      }
+
+      // Enregistrer l'événement (limité pour éviter la surcharge)
+      if (inputEvents.length < 1000) {
+        inputEvents.push({
+          time: currentTime,
+          length: text.length,
+          count: count
+        });
+      }
+
+      counterDisplay.textContent = `${count} / ${targetCount}`;
+
+      if (count > 0 && !startTime) {
+        startTime = performance.now();
+        requestAnimationFrame(updateTimer);
+      }
+
+      if (count >= targetCount) {
+        finished = true;
+        const duration = ((performance.now() - startTime) / 1000).toFixed(2);
+        timerDisplay.textContent = `${duration}s`;
+        
+        let warnings = [];
+        if (pasteDetected) warnings.push("Collage détecté");
+        if (parseFloat(duration) < 3) warnings.push("Temps physiquement impossible");
+        
+        let resultText = `Félicitations ! Vous avez saisi 1784 caractères "?" en ${duration} secondes.`;
+        if (warnings.length > 0) {
+          resultText += ` ⚠️ Anomalies: ${warnings.join(', ')}`;
+        }
+        
+        result.textContent = resultText;
+        result.classList.add('show');
+        textarea.disabled = true;
+      }
+
+      lastInputTime = currentTime;
+    });
+
+    function updateTimer() {
+      if (!startTime || finished) return;
+      const now = performance.now();
+      const elapsed = ((now - startTime) / 1000).toFixed(2);
+      timerDisplay.textContent = `${elapsed}s`;
+      requestAnimationFrame(updateTimer);
+    }
+
+    resetBtn.addEventListener('click', () => {
+      textarea.value = '';
+      textarea.disabled = false;
+      textarea.focus();
+      startTime = null;
+      finished = false;
+      lastInputTime = 0;
+      inputEvents = [];
+      pasteDetected = false;
+      tabFocused = true;
+      massiveJumpDetected = false;
+      timerDisplay.textContent = '0.00s';
+      counterDisplay.textContent = '0 / 1784';
+      result.classList.remove('show');
+      notification.classList.remove('show');
+      
+      initSystemInfo();
+    });
+
+    screenshotBtn.addEventListener('click', async () => {
+      try {
+        const instituteNameEl = document.querySelector('.institute-name');
+        const originalBackground = instituteNameEl.style.background;
+        const originalBackgroundClip = instituteNameEl.style.backgroundClip;
+        const originalWebkitBackgroundClip = instituteNameEl.style.webkitBackgroundClip;
+        const originalWebkitTextFillColor = instituteNameEl.style.webkitTextFillColor;
+        const originalColor = instituteNameEl.style.color;
+        
+        instituteNameEl.style.background = 'none';
+        instituteNameEl.style.backgroundClip = 'unset';
+        instituteNameEl.style.webkitBackgroundClip = 'unset';
+        instituteNameEl.style.webkitTextFillColor = 'unset';
+        instituteNameEl.style.color = '#348eec';
+        
+        const canvas = await html2canvas(document.querySelector('.container'), {
+          backgroundColor: 'rgba(30, 41, 59, 0.95)',
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          height: document.querySelector('.container').scrollHeight,
+          width: document.querySelector('.container').scrollWidth
+        });
+        
+        // Restaurer les styles originaux
+        instituteNameEl.style.background = originalBackground;
+        instituteNameEl.style.backgroundClip = originalBackgroundClip;
+        instituteNameEl.style.webkitBackgroundClip = originalWebkitBackgroundClip;
+        instituteNameEl.style.webkitTextFillColor = originalWebkitTextFillColor;
+        instituteNameEl.style.color = originalColor;
+        
+        canvas.toBlob(async blob => {
+          const item = new ClipboardItem({ 'image/png': blob });
+          await navigator.clipboard.write([item]);
+          showNotification('Image copiée ! Collez-la sur Discord avec Ctrl+V', 'success');
+        });
+      } catch (err) {
+        showNotification('Erreur lors du partage du résultat', 'error');
+        console.error(err);
+      }
+    });
+
+    textarea.focus();
+  </script>
+</body>
+</html>
