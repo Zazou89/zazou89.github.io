@@ -635,7 +635,10 @@
         
         let warnings = [];
         if (pasteDetected) warnings.push("Collage détecté");
-        if (parseFloat(duration) < 3) warnings.push("Temps physiquement impossible");
+        if (parseFloat(duration) < 5) {
+        stopTest("Temps trop court pour être humainement faisable");
+        return;
+}
         
         let resultText = `🎉 Félicitations ! Vous avez saisi 1784 caractères "?" en ${duration} secondes.`;
         if (warnings.length > 0) {
