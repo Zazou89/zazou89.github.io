@@ -22,6 +22,8 @@
       align-items: center;
       justify-content: center;
       padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
     }
 
     .container {
@@ -33,6 +35,8 @@
       width: 100%;
       max-width: 700px;
       padding: 2rem;
+      position: relative;
+      z-index: 1;
     }
 
     .institute-header {
@@ -210,6 +214,12 @@
       gap: 0.5rem;
     }
 
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
     .btn-primary {
       background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       background-size: 100% 100%;
@@ -218,7 +228,7 @@
       border: 1px solid rgba(59, 130, 246, 0.3);
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       background: linear-gradient(135deg, #2563eb, #1e40af);
       background-size: 100% 100%;
       background-repeat: no-repeat;
@@ -231,7 +241,7 @@
       border: 1px solid rgba(148, 163, 184, 0.3);
     }
 
-    .btn-secondary:hover {
+    .btn-secondary:hover:not(:disabled) {
       background: rgba(51, 65, 85, 0.8);
       transform: translateY(-1px);
     }
@@ -306,8 +316,6 @@
       <div class="institute-subtitle">Institut de Technologie, d'Étude et de Recherche Appliquée en Typographie Électronique</div>
     </div>
 
-
-    
     <h1>Test de vitesse de répétition - 1784 caractères</h1>
     <p class="description">
       Cette expérience vise à mesurer le temps nécessaire pour saisir 1784 fois consécutivement le caractère <strong>?</strong>.
@@ -338,7 +346,7 @@
 
     <div class="actions">
       <button id="resetBtn" class="btn btn-secondary">Recommencer</button>
-      <button id="screenshotBtn" class="btn btn-primary">Partager le résultat</button>
+      <button id="screenshotBtn" class="btn btn-primary" disabled>Partager le résultat</button>
     </div>
 
     <div class="notification" id="notification"></div>
@@ -359,9 +367,6 @@
     </div>
   </div>
 
-  <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <script>
     const textarea = document.getElementById('input');
     const timerDisplay = document.getElementById('timer');
@@ -373,12 +378,134 @@
 
     let startTime = null;
     let finished = false;
+    let stopped = false;
     let lastInputTime = 0;
     let inputEvents = [];
     let pasteDetected = false;
     let tabFocused = true;
     let massiveJumpDetected = false;
     const targetCount = 1784;
+    
+    let confettiLoaded = false;
+    let html2canvasLoaded = false;
+
+    function createConfetti() {
+      if (!confettiLoaded || typeof window.confetti !== 'function') {
+        console.log('Confetti non disponible, utilisation du fallback');
+        createFallbackConfetti();
+        return;
+      }
+      
+      try {
+        const duration = 3000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+        function randomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function() {
+          const timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          const particleCount = 50 * (timeLeft / duration);
+          
+          window.confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+          });
+          
+          window.confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+          });
+        }, 250);
+      } catch (error) {
+        console.error('Erreur lors de la création des confettis:', error);
+        createFallbackConfetti();
+      }
+    }
+
+    function createFallbackConfetti() {
+      const container = document.querySelector('.container');
+      const celebration = document.createElement('div');
+      celebration.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1000;
+        border-radius: 16px;
+      `;
+      
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: ${['#a855f7', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b'][i % 5]};
+          border-radius: 50%;
+          top: -10px;
+          left: ${Math.random() * 100}%;
+          animation: fall ${2 + Math.random() * 2}s linear forwards;
+        `;
+        celebration.appendChild(particle);
+      }
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fall {
+          to {
+            transform: translateY(110vh) rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      container.appendChild(celebration);
+      
+      // Nettoyer après l'animation
+      setTimeout(() => {
+        celebration.remove();
+        style.remove();
+      }, 4000);
+    }
+
+    function loadExternalScripts() {
+
+      const html2canvasScript = document.createElement('script');
+      html2canvasScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      html2canvasScript.onload = () => {
+        html2canvasLoaded = true;
+        console.log('html2canvas chargé');
+      };
+      html2canvasScript.onerror = () => {
+        console.error('Erreur lors du chargement de html2canvas');
+      };
+      document.head.appendChild(html2canvasScript);
+
+      const confettiScript = document.createElement('script');
+      confettiScript.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js';
+      confettiScript.onload = () => {
+        confettiLoaded = true;
+        console.log('canvas-confetti chargé');
+      };
+      confettiScript.onerror = () => {
+        console.error('Erreur lors du chargement de canvas-confetti');
+      };
+      document.head.appendChild(confettiScript);
+    }
 
     // Détection du navigateur
     function getBrowserInfo() {
@@ -439,9 +566,6 @@
       });
     }
 
-    // Initialiser les infos système au chargement
-    initSystemInfo();
-
     function countQuestionMarks(str) {
       return (str.match(/\?/g) || []).length;
     }
@@ -451,47 +575,44 @@
       notification.className = `notification show ${type}`;
       setTimeout(() => {
         notification.classList.remove('show');
-      }, 3000);
+      }, 5000);
     }
 
-    // Détection de changement d'onglet
+    function stopTest(reason) {
+      stopped = true;
+      finished = true;
+      textarea.disabled = true;
+      showNotification(`❌ Test arrêté : ${reason}`, 'error');
+    }
+
     document.addEventListener('visibilitychange', () => {
       if (startTime && !finished) {
         tabFocused = !document.hidden;
       }
     });
 
-    // Détection de copier-coller
     textarea.addEventListener('paste', (e) => {
       e.preventDefault();
       pasteDetected = true;
-      showNotification('⚠️ Collage détecté - Veuillez taper manuellement', 'error');
+      stopTest('Collage détecté');
     });
 
-    function detectSuspiciousInput(currentTime, previousCount, currentCount) {
-      return false;
-    }
-
     textarea.addEventListener('input', (e) => {
-      if (finished) return;
+      if (finished || stopped) return;
 
       const currentTime = performance.now();
       const text = textarea.value;
       const count = countQuestionMarks(text);
       const previousCount = inputEvents.length > 0 ? inputEvents[inputEvents.length - 1].count : 0;
 
-      // Vérification: seulement des points d'interrogation
       if (text.length > count) {
         const invalidChars = text.replace(/\?/g, '').length;
         if (invalidChars > 0) {
-          showNotification('⚠️ Seuls les caractères "?" sont autorisés !', 'error');
-          // Nettoyer le texte
-          textarea.value = '?'.repeat(count);
+          stopTest('Caractères non autorisés détectés');
           return;
         }
       }
 
-      // Enregistrer l'événement (limité pour éviter la surcharge)
       if (inputEvents.length < 1000) {
         inputEvents.push({
           time: currentTime,
@@ -516,7 +637,7 @@
         if (pasteDetected) warnings.push("Collage détecté");
         if (parseFloat(duration) < 3) warnings.push("Temps physiquement impossible");
         
-        let resultText = `Félicitations ! Vous avez saisi 1784 caractères "?" en ${duration} secondes.`;
+        let resultText = `🎉 Félicitations ! Vous avez saisi 1784 caractères "?" en ${duration} secondes.`;
         if (warnings.length > 0) {
           resultText += ` ⚠️ Anomalies: ${warnings.join(', ')}`;
         }
@@ -524,6 +645,13 @@
         result.textContent = resultText;
         result.classList.add('show');
         textarea.disabled = true;
+        
+        createConfetti();
+        
+        setTimeout(() => {
+          screenshotBtn.disabled = false;
+          showNotification('🎉 Test terminé avec succès !', 'success');
+        }, 100);
       }
 
       lastInputTime = currentTime;
@@ -543,6 +671,7 @@
       textarea.focus();
       startTime = null;
       finished = false;
+      stopped = false;
       lastInputTime = 0;
       inputEvents = [];
       pasteDetected = false;
@@ -552,11 +681,19 @@
       counterDisplay.textContent = '0 / 1784';
       result.classList.remove('show');
       notification.classList.remove('show');
+      screenshotBtn.disabled = true;
       
       initSystemInfo();
     });
 
     screenshotBtn.addEventListener('click', async () => {
+      if (!finished || stopped) return;
+      
+      if (!html2canvasLoaded || typeof html2canvas !== 'function') {
+        showNotification('⚠️ Fonction de capture non disponible', 'error');
+        return;
+      }
+      
       try {
         const instituteNameEl = document.querySelector('.institute-name');
         const originalBackground = instituteNameEl.style.background;
@@ -588,15 +725,39 @@
         instituteNameEl.style.color = originalColor;
         
         canvas.toBlob(async blob => {
-          const item = new ClipboardItem({ 'image/png': blob });
-          await navigator.clipboard.write([item]);
-          showNotification('Image copiée ! Collez-la sur Discord avec Ctrl+V', 'success');
+          try {
+            const item = new ClipboardItem({ 'image/png': blob });
+            await navigator.clipboard.write([item]);
+            showNotification('📷 Image copiée ! Collez-la sur Discord avec Ctrl+V', 'success');
+          } catch (clipboardError) {
+            const link = document.createElement('a');
+            link.download = 'iterate-result.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            showNotification('📷 Image téléchargée !', 'success');
+          }
         });
       } catch (err) {
-        showNotification('Erreur lors du partage du résultat', 'error');
+        showNotification('❌ Erreur lors du partage du résultat', 'error');
         console.error(err);
       }
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSystemInfo();
+      loadExternalScripts();
+      textarea.focus();
+    });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        initSystemInfo();
+        loadExternalScripts();
+      });
+    } else {
+      initSystemInfo();
+      loadExternalScripts();
+    }
 
     textarea.focus();
   </script>
